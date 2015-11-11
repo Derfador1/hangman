@@ -3,15 +3,20 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define CHANCES 5
-#define WORDS 5
+#define CHANCES 6
+#define WORD_SIZE 36
+#define GUESS_SIZE 3
+
 
 int main(int argc, char * argv[])
 {
-
+	FILE *fp;
 	srand(time(NULL));
-	int i;
+	char dictionary[WORD_SIZE];
+	int ran;
+	char *guess;
 
+	guess = malloc(GUESS_SIZE);
 
 	if (argc == 1)
 	{
@@ -21,24 +26,68 @@ int main(int argc, char * argv[])
 	{
 		if (strncmp(argv[1], "-h", 10) == 0) //checks if the strings are equal
 		{
-			printf("Rule: \n");
+			printf("Rules: \n");
 		}
 	}
 
-	char *dictionary[] = {"WORD", "COW", "CHEESE", "POOP", "FALSE"};
 
-	for (int c = 0; c < 5; c++)
-		printf("%s\n", dictionary[c]);
-
-	i = (rand() % WORDS);
-
-	char * word = dictionary[i];
-	size_t length = strlen(word);
-	for (unsigned int y = 0; y < length; y++)
+	if (!(fp = fopen("words.txt", "r+")))
 	{
-		printf("_ ");
+		fprintf(stderr, "An error occured.\n");
+		return 1;
 	}
-	printf("\nSize : %zd\n", length);
-	printf("%s\n", word);
+	else
+	{
+		int i;
+		for (; fgets(dictionary, sizeof(dictionary), fp); i++)
+		{
+			;
+		}
 
+		ran = (rand() % i);
+		rewind(fp);
+	}
+
+	for (int c = 0; c < ran; c++)
+		fgets(dictionary, sizeof(dictionary), fp);
+
+	printf("%s\n", dictionary);
+
+	int word_length = (strlen(dictionary) - 1);
+
+	while(1)
+	{
+		printf("What is your guess: ");
+		fgets(guess, 6, stdin);
+
+		printf("%d\n", word_length);
+
+		if (guess[1] == '\n')
+		{
+			for (int y = 0; y < word_length; y++)
+			{
+				if (dictionary[y] == guess[0])
+				{
+					printf("In there\n");
+				}
+				else
+				{
+					printf("Ya\n");
+				}
+			}
+		}
+		else
+		{
+			printf("Not right\n");
+			while(!strrchr(guess, '\n')){
+				fgets(guess, 6, stdin);
+			}	
+		}
+
+		printf("End loop\n");
+
+	}
+
+	fclose(fp);
+	free(guess);
 }
