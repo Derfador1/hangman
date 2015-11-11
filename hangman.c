@@ -53,13 +53,15 @@ int main(int argc, char * argv[])
 
 
 	char * word = dictionary;
-	int correct_guess = 0;
+	int correct_guesses = 0;
 	int number_guesses = 0;
+	int wrong_guesses = 0;
 
 	size_t size = sizeof(word);
 
 	char * secret_array;
-
+	
+	word = malloc(size);
 	secret_array = malloc(size);
 
 	for (int unsigned f = 0; f < size; f++)
@@ -72,24 +74,24 @@ int main(int argc, char * argv[])
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
-		//printf("%d\n", word_length);
 		printf("%s\n", word);
 		if (guess[1] == '\n')
 		{
-			for (int unsigned y = 0; y < size; y++)
+			for (int unsigned y = 0; y <= size + 1; ++y)
 			{
 				if (dictionary[y] == guess[0])
 				{
 					secret_array[y] = guess[0];
-					correct_guess++;
+					correct_guesses++;
 				}
-				else
-				{
-				}
+
 			}
 			number_guesses++;
 			printf("Total guesses is : %d\n", number_guesses);
 			printf("%s\n", secret_array);
+
+			printf("Correct guesses are : %d\n", correct_guesses);
+			printf("Wrong guesses are : %d\n", wrong_guesses);
 		}
 		else
 		{
@@ -105,4 +107,5 @@ int main(int argc, char * argv[])
 	fclose(fp);
 	free(guess);
 	free(secret_array);
+	free(word);
 }
