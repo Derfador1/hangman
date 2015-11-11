@@ -57,6 +57,7 @@ int main(int argc, char * argv[])
 	int number_guesses = 0;
 	int wrong_guesses = 0;
 	int tracker = 1;
+	int winner = 1;
 
 	size_t size = sizeof(word);
 
@@ -103,8 +104,23 @@ int main(int argc, char * argv[])
 			printf("Wrong guesses are : %d\n", wrong_guesses);
 			tracker = 1;
 
+			for (int unsigned c = 0; c <= size; ++c)
+			{
+				if (secret_array[c] == '_')
+				{
+					winner = 0;
+					break;	
+				}
+				else
+					winner = 1;	
+			}
 
-			if (wrong_guesses == CHANCES)
+			if (winner == 1)
+			{
+				printf("you win\n");
+				break;
+			}
+			else if (wrong_guesses == CHANCES)
 			{
 				printf("You lose\n");
 				break;
