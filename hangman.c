@@ -56,6 +56,7 @@ int main(int argc, char * argv[])
 	int correct_guesses = 0;
 	int number_guesses = 0;
 	int wrong_guesses = 0;
+	int tracker = 1;
 
 	size_t size = sizeof(word);
 
@@ -74,7 +75,6 @@ int main(int argc, char * argv[])
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
-		printf("%s\n", word);
 		if (guess[1] == '\n')
 		{
 			for (int unsigned y = 0; y <= size + 1; ++y)
@@ -83,15 +83,32 @@ int main(int argc, char * argv[])
 				{
 					secret_array[y] = guess[0];
 					correct_guesses++;
+					tracker = 0;
 				}
 
 			}
+
+			if (tracker == 1)
+			{
+				printf("That was not in the word\n");
+				wrong_guesses++;
+			}
+
 			number_guesses++;
+			printf("%s\n", dictionary);
 			printf("Total guesses is : %d\n", number_guesses);
 			printf("%s\n", secret_array);
 
 			printf("Correct guesses are : %d\n", correct_guesses);
 			printf("Wrong guesses are : %d\n", wrong_guesses);
+			tracker = 1;
+
+
+			if (wrong_guesses == CHANCES)
+			{
+				printf("You lose\n");
+				break;
+			}
 		}
 		else
 		{
