@@ -51,30 +51,45 @@ int main(int argc, char * argv[])
 	for (int c = 0; c < ran; c++)
 		fgets(dictionary, sizeof(dictionary), fp);
 
-	printf("%s\n", dictionary);
 
-	int word_length = (strlen(dictionary) - 1);
+	char * word = dictionary;
+	int correct_guess = 0;
+	int number_guesses = 0;
+
+	size_t size = sizeof(word);
+
+	char * secret_array;
+
+	secret_array = malloc(size);
+
+	for (int unsigned f = 0; f < size; f++)
+	{
+		secret_array[f] = '_';
+	}
 
 	while(1)
 	{
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
-		printf("%d\n", word_length);
-
+		//printf("%d\n", word_length);
+		printf("%s\n", word);
 		if (guess[1] == '\n')
 		{
-			for (int y = 0; y < word_length; y++)
+			for (int unsigned y = 0; y < size; y++)
 			{
 				if (dictionary[y] == guess[0])
 				{
-					printf("In there\n");
+					secret_array[y] = guess[0];
+					correct_guess++;
 				}
 				else
 				{
-					printf("Ya\n");
 				}
 			}
+			number_guesses++;
+			printf("Total guesses is : %d\n", number_guesses);
+			printf("%s\n", secret_array);
 		}
 		else
 		{
@@ -84,10 +99,10 @@ int main(int argc, char * argv[])
 			}	
 		}
 
-		printf("End loop\n");
 
 	}
 
 	fclose(fp);
 	free(guess);
+	free(secret_array);
 }
