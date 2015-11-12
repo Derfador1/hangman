@@ -50,25 +50,23 @@ int main(int argc, char * argv[])
 
 	for (int c = 0; c < ran; c++)
 		fgets(dictionary, sizeof(dictionary), fp);
-
-
+			
 	char * word = dictionary;
-	int correct_guesses = 0;
-	int number_guesses = 0;
+	int unsigned g = 0;
 	int wrong_guesses = 0;
+	//int correct_guesses var
 	int tracker = 1;
 	int winner = 1;
-
+	int already = 1;
 	size_t size = sizeof(word);
-
 	char * secret_array;
 	
 	word = malloc(size);
 	secret_array = malloc(size);
 
-	for (int unsigned f = 0; f < size; f++)
+	for (g = 0; g < size; g++)
 	{
-		secret_array[f] = '_';
+		secret_array[g] = '_';
 	}
 
 	while(1)
@@ -76,33 +74,57 @@ int main(int argc, char * argv[])
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
+		if (*guess >= 'a' && *guess <= 'z')
+		{
+			*guess = ('A' + *guess - 'a');
+		}
+
+
+		for (g = 0; g < size; ++g)
+		{
+			if (secret_array[g] == guess[0])
+			{
+				printf("Already in guess\n\n");
+				already = 0;
+			}
+		}
+
 		if (guess[1] == '\n')
 		{
-			for (int unsigned y = 0; y <= size + 1; ++y)
+			for (g = 0; g < size; ++g)
 			{
-				if (dictionary[y] == guess[0])
+				if (already == 1)
 				{
-					secret_array[y] = guess[0];
-					correct_guesses++;
-					tracker = 0;
+					if (dictionary[g] == guess[0])
+					{
+						secret_array[g] = guess[0];
+						//correct_guesses++ counter
+						tracker = 0;
+					}
 				}
-
+				else
+				{
+					if (dictionary[g] == guess[0])
+					{
+						tracker = 0;
+					}
+				}
 			}
 
 			if (tracker == 1)
 			{
-				printf("That was not in the word\n");
+				printf("That was not in the word\n\n");
 				wrong_guesses++;
 			}
 
-			number_guesses++;
-			printf("%s\n", dictionary);
-			printf("Total guesses is : %d\n", number_guesses);
+
+			printf("Size of word is : %zd\n\n", size);
 			printf("%s\n", secret_array);
 
-			printf("Correct guesses are : %d\n", correct_guesses);
 			printf("Wrong guesses are : %d\n", wrong_guesses);
 			tracker = 1;
+			already = 1;
+			//printf("\n%s\n", hung[0]);
 
 			for (int unsigned c = 0; c <= size; ++c)
 			{
@@ -117,7 +139,7 @@ int main(int argc, char * argv[])
 
 			if (winner == 1)
 			{
-				printf("you win\n");
+				printf("You win\n");
 				break;
 			}
 			else if (wrong_guesses == CHANCES)
@@ -125,6 +147,7 @@ int main(int argc, char * argv[])
 				printf("You lose\n");
 				break;
 			}
+
 		}
 		else
 		{
@@ -136,6 +159,8 @@ int main(int argc, char * argv[])
 
 
 	}
+
+	//open file and write stats to it
 
 	fclose(fp);
 	free(guess);
