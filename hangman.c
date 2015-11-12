@@ -20,36 +20,56 @@ int main(int argc, char * argv[])
 
 	if (argc == 1)
 	{
-		//begins like normal
+		if (!(fp = fopen("words.txt", "r+")))
+		{
+			fprintf(stderr, "An error occured.\n");
+			return 1;
+		}
+		else
+		{
+			int i;
+			for (; fgets(dictionary, sizeof(dictionary), fp); i++)
+			{
+				;
+			}
+
+			ran = (rand() % i);
+			rewind(fp);
+
+			for (int c = 0; c < ran; c++)
+				fgets(dictionary, sizeof(dictionary), fp);
+		}
 	}
 	else if (argc == 2)
 	{
 		if (strncmp(argv[1], "-h", 10) == 0) //checks if the strings are equal
 		{
-			printf("Rules: \n");
+			printf("Rules:\n");
 		}
-	}
-
-
-	if (!(fp = fopen("words.txt", "r+")))
-	{
-		fprintf(stderr, "An error occured.\n");
-		return 1;
-	}
-	else
-	{
-		int i;
-		for (; fgets(dictionary, sizeof(dictionary), fp); i++)
+		else
 		{
-			;
+			if (!(fp = fopen(argv[1], "r+")))
+			{
+				fprintf(stderr, "An error occured.\n");
+				return 1;
+			}
+			else
+			{
+				int i;
+				for (; fgets(dictionary, sizeof(dictionary), fp); i++)
+				{
+					;
+				}
+
+				ran = (rand() % i);
+				rewind(fp);
+
+				for (int c = 0; c < ran; c++)
+					fgets(dictionary, sizeof(dictionary), fp);
+			}
+			
 		}
-
-		ran = (rand() % i);
-		rewind(fp);
 	}
-
-	for (int c = 0; c < ran; c++)
-		fgets(dictionary, sizeof(dictionary), fp);
 			
 	char * word = dictionary;
 	int unsigned g = 0;
