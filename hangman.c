@@ -36,12 +36,52 @@ int main(int argc, char * argv[])
 		}
 	}
 
+	/* Learned the ability to print out my hang man from
+		* stackoverflow.com/revisions/22965820/1
+	*/
 
+	char * hung[] = {
+			"  =======|\n"
+			"         |\n"
+			"         |\n"
+			"         |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			"         |\n"
+			"         |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			"  |      |\n"
+			"         |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			" /|      |\n"
+			"         |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			" /|\\     |\n"
+			"         |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			" /|\\     |\n"
+			" /       |\n"
+			"       ====\n",
+			"  |======|\n"
+			"  o      |\n"
+			" /|\\     |\n"
+			" / \\     |\n"
+			"       ====\n",
+	};
 
 
 			
 	char * word = dictionary;
-	int unsigned g = 0;
+	int unsigned count = 0;
 	int wrong_guesses = 0;
 	int tracker = 1;
 	int winner = 1;
@@ -51,15 +91,13 @@ int main(int argc, char * argv[])
 	FILE *stats;
 	int win = 0;
 	int loss = 0;
+
 	word = malloc(size);
 
 
-	printf("%s\n", dictionary);
-	printf("%zd\n", (size - 1));
-
-	for (g = 0; g < size; g++)
+	for (count = 0; count < size; count++)
 	{
-		secret_array[g] = '_';
+		secret_array[count] = '_';
 	}
 	secret_array[size - 1] = '\0';
 
@@ -74,9 +112,9 @@ int main(int argc, char * argv[])
 		}
 
 
-		for (g = 0; g < size; ++g)
+		for (count = 0; count < size; ++count)
 		{
-			if (secret_array[g] == guess[0])
+			if (secret_array[count] == guess[0])
 			{
 				printf("Already in guess\n\n");
 				already = 0;
@@ -85,20 +123,20 @@ int main(int argc, char * argv[])
 
 		if (guess[1] == '\n')
 		{
-			for (g = 0; g < size; ++g)
+			for (count = 0; count < size; ++count)
 			{
 				if (already == 1)
 				{
-					if (dictionary[g] == guess[0])
+					if (dictionary[count] == guess[0])
 					{
-						secret_array[g] = guess[0];
+						secret_array[count] = guess[0];
 						//correct_guesses++ counter
 						tracker = 0;
 					}
 				}
 				else
 				{
-					if (dictionary[g] == guess[0])
+					if (dictionary[count] == guess[0])
 					{
 						tracker = 0;
 					}
@@ -108,6 +146,7 @@ int main(int argc, char * argv[])
 			if (tracker == 1)
 			{
 				printf("That was not in the word\n\n");
+				printf("%s\n", hung[wrong_guesses]);
 				wrong_guesses++;
 			}
 
@@ -130,9 +169,9 @@ int main(int argc, char * argv[])
 					winner = 1;	
 			}
 
+
 			stats = fopen("hangman.txt", "r+");
 			fscanf(stats, "%d %d", &win, &loss);
-			//printf("Win: %d\tLoss: %d\n", win, loss);
 
 			fclose(stats);
 
@@ -142,7 +181,7 @@ int main(int argc, char * argv[])
 				win++;
 				break;
 			}
-			else if (wrong_guesses == CHANCES)
+			else if (wrong_guesses == (CHANCES + 1))
 			{
 				printf("You lose\n");
 				loss++;
