@@ -8,74 +8,52 @@
 #define GUESS_SIZE 3
 
 
+int checker(char * dictionary, char * argv[], int i);
+
 int main(int argc, char * argv[])
 {
-	FILE *fp;
 	srand(time(NULL));
-	char dictionary[WORD_SIZE];
-	int ran;
+	char * dictionary;
 	char *guess;
+	int i = 0;
 
 	guess = malloc(GUESS_SIZE);
+	dictionary = malloc(WORD_SIZE);
 
 	if (argc == 1)
 	{
-		if (!(fp = fopen("words.txt", "r+")))
+		argv[1] = "words.txt";
+		if (1 == checker(dictionary, argv, i))
 		{
-			fprintf(stderr, "An error occured.\n");
-			return 1;
-		}
-		else
-		{
-			int i;
-			for (; fgets(dictionary, sizeof(dictionary), fp); i++)
-			{
-				;
-			}
-
-			ran = (rand() % i);
-			rewind(fp);
-
-			for (int c = 0; c < ran; c++)
-				fgets(dictionary, sizeof(dictionary), fp);
+			exit(1);
 		}
 	}
 	else if (argc == 2)
 	{
-		if (!(fp = fopen(argv[1], "r+")))
+		if (1 == checker(dictionary, argv, i))
 		{
-			fprintf(stderr, "An error occured.\n");
-			return 1;
+			exit(1);
 		}
-		else
-		{
-			int i;
-			for (; fgets(dictionary, sizeof(dictionary), fp); i++)
-			{
-				;
-			}
-
-			ran = (rand() % i);
-			rewind(fp);
-
-			for (int c = 0; c < ran; c++)
-				fgets(dictionary, sizeof(dictionary), fp);
-		}
-
 	}
+
+
+
+
 			
 	char * word = dictionary;
-	int unsigned g = 0;
+	int g = 0;
 	int wrong_guesses = 0;
-	//int correct_guesses var
 	int tracker = 1;
 	int winner = 1;
 	int already = 1;
-	size_t size = sizeof(word);
+	int size = (strlen(word) - 1);
 	char * secret_array;
 	
 	word = malloc(size);
 	secret_array = malloc(size);
+
+	printf("%s\n", dictionary);
+	printf("%d\n", size);
 
 	for (g = 0; g < size; g++)
 	{
@@ -131,15 +109,14 @@ int main(int argc, char * argv[])
 			}
 
 
-			printf("Size of word is : %zd\n\n", size);
+			printf("Size of word is : %d\n\n", size);
 			printf("%s\n", secret_array);
 
-			printf("Wrong guesses are : %d\n", wrong_guesses);
+			printf("Wrong guesses are : %d\n\n", wrong_guesses);
 			tracker = 1;
 			already = 1;
-			//printf("\n%s\n", hung[0]);
 
-			for (int unsigned c = 0; c <= size; ++c)
+			for (int c = 0; c <= size; ++c)
 			{
 				if (secret_array[c] == '_')
 				{
@@ -175,8 +152,37 @@ int main(int argc, char * argv[])
 
 	//open file and write stats to it
 
-	fclose(fp);
 	free(guess);
 	free(secret_array);
 	free(word);
+	free(dictionary);
+}
+
+
+int checker(char * dictionary, char * argv[], int i)
+{
+	FILE *fp;
+	int ran; 
+	if (!(fp = fopen(argv[1], "r+")))
+	{
+		fprintf(stderr, "An error occured.\n");
+		return 1;
+	}
+	else
+	{
+		for (; fgets(dictionary, WORD_SIZE, fp); i++)
+		{
+			;
+		}
+		ran = (rand() % i);
+		rewind(fp);
+
+		for (int c = 0; c < ran; c++)
+			fgets(dictionary, WORD_SIZE, fp);
+
+		return 0;
+	}
+
+	fclose(fp);
+
 }
