@@ -42,33 +42,26 @@ int main(int argc, char * argv[])
 	}
 	else if (argc == 2)
 	{
-		if (strncmp(argv[1], "-h", 10) == 0) //checks if the strings are equal
+		if (!(fp = fopen(argv[1], "r+")))
 		{
-			printf("Rules:\n");
+			fprintf(stderr, "An error occured.\n");
+			return 1;
 		}
 		else
 		{
-			if (!(fp = fopen(argv[1], "r+")))
+			int i;
+			for (; fgets(dictionary, sizeof(dictionary), fp); i++)
 			{
-				fprintf(stderr, "An error occured.\n");
-				return 1;
+				;
 			}
-			else
-			{
-				int i;
-				for (; fgets(dictionary, sizeof(dictionary), fp); i++)
-				{
-					;
-				}
 
-				ran = (rand() % i);
-				rewind(fp);
+			ran = (rand() % i);
+			rewind(fp);
 
-				for (int c = 0; c < ran; c++)
-					fgets(dictionary, sizeof(dictionary), fp);
-			}
-			
+			for (int c = 0; c < ran; c++)
+				fgets(dictionary, sizeof(dictionary), fp);
 		}
+
 	}
 			
 	char * word = dictionary;
