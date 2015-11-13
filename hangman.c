@@ -8,14 +8,15 @@
 #define GUESS_SIZE 3
 
 
-int checker(char * dictionary, char * argv[], int i);
+int checker(char * dictionary, char * argv[], int random);
+int init_secret(int unsigned counter, size_t size, char * secret_array);
 
 int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	char * dictionary;
 	char *guess;
-	int i = 0;
+	int random = 0;
 
 	guess = malloc(GUESS_SIZE);
 	dictionary = malloc(WORD_SIZE);
@@ -23,14 +24,14 @@ int main(int argc, char * argv[])
 	if (argc == 1)
 	{
 		argv[1] = "words.txt";
-		if (1 == checker(dictionary, argv, i))
+		if (1 == checker(dictionary, argv, random))
 		{
 			exit(1);
 		}
 	}
 	else if (argc == 2)
 	{
-		if (1 == checker(dictionary, argv, i))
+		if (1 == checker(dictionary, argv, random))
 		{
 			exit(1);
 		}
@@ -86,23 +87,29 @@ int main(int argc, char * argv[])
 	int tracker = 1;
 	int winner = 1;
 	int already = 1;
-	size_t size = strlen(word); //change to size_t
+	size_t size = strlen(word);
 	char * secret_array = malloc(size);
 	FILE *stats;
 	int win = 0;
 	int loss = 0;
+	int nofgames = 0;
+	float score = 0.0;
 
 	word = malloc(size);
 
 
-	for (count = 0; count < size; count++)
+	if(1 != init_secret(count, size, secret_array))
 	{
-		secret_array[count] = '_';
+		printf("Fatal error, reopen file\n");
+		exit(1);
 	}
-	secret_array[size - 1] = '\0';
+
 
 	while(1)
 	{
+		printf("Size of word is : %zd\n\n", (size - 1));
+		printf("%s\n", secret_array);
+		
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
@@ -146,13 +153,11 @@ int main(int argc, char * argv[])
 			if (tracker == 1)
 			{
 				printf("That was not in the word\n\n");
-				printf("%s\n", hung[wrong_guesses]);
 				wrong_guesses++;
+				printf("%s\n", hung[wrong_guesses]);
+				//wrong_guesses++;
 			}
 
-
-			printf("Size of word is : %zd\n\n", (size - 1));
-			printf("%s\n", secret_array);
 
 			printf("Wrong guesses are : %d\n\n", wrong_guesses);
 			tracker = 1;
@@ -171,7 +176,7 @@ int main(int argc, char * argv[])
 
 
 			stats = fopen("hangman.txt", "r+");
-			fscanf(stats, "%d %d", &win, &loss);
+			fscanf(stats, "%d %d %d %f", &win, &loss, &nofgames, &score);
 
 			fclose(stats);
 
@@ -199,11 +204,13 @@ int main(int argc, char * argv[])
 
 
 	}
+	nofgames++;
+	score = wrong_guesses / win;
 	
-	printf("Win: %d\tLoss: %d\n", win, loss);
+	printf("Win: %d\tLoss: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
 
 	stats = fopen("hangman.txt", "w+");
-	fprintf(stats, "%d %d", win, loss);
+	fprintf(stats, "%d %d %d %.2f", win, loss, nofgames, score);
 
 	fclose(stats);
 	free(guess);
@@ -213,7 +220,7 @@ int main(int argc, char * argv[])
 }
 
 
-int checker(char * dictionary, char * argv[], int i)
+int checker(char * dictionary, char * argv[], int random)
 {
 	FILE *fp;
 	int ran; 
@@ -224,11 +231,11 @@ int checker(char * dictionary, char * argv[], int i)
 	}
 	else
 	{
-		for (; fgets(dictionary, WORD_SIZE, fp); i++)
+		for (; fgets(dictionary, WORD_SIZE, fp); random++)
 		{
 			;
 		}
-		ran = (rand() % i);
+		ran = (rand() % random);
 		rewind(fp);
 
 		for (int c = 0; c < ran; c++)
@@ -239,4 +246,14 @@ int checker(char * dictionary, char * argv[], int i)
 	}
 	fclose(fp);
 	return 0;
+}
+
+int init_secret(int unsigned counter, size_t size, char * secret_array)
+{
+	for (counter = 0; counter < size; counter++)
+	{
+		secret_array[counter] = '_';
+	}
+	secret_array[size - 1] = '\0';
+	return 1;
 }
