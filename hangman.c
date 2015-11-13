@@ -15,15 +15,13 @@ int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	char * dictionary;
-	char *guess;
 	int random = 0;
 
-	guess = malloc(GUESS_SIZE);
 	dictionary = malloc(WORD_SIZE);
 
 	if (argc == 1)
 	{
-		argv[1] = "words.txt";
+		argv[1] = "words";
 		if (1 == checker(dictionary, argv, random))
 		{
 			exit(1);
@@ -82,20 +80,25 @@ int main(int argc, char * argv[])
 
 			
 	char * word = dictionary;
+	char *guess;
+	size_t size = strlen(word);
+	char * secret_array = malloc(size);
+	char * already_guessed;
 	int unsigned count = 0;
 	int wrong_guesses = 0;
 	int tracker = 1;
 	int winner = 1;
 	int already = 1;
-	size_t size = strlen(word);
-	char * secret_array = malloc(size);
 	FILE *stats;
 	int win = 0;
 	int loss = 0;
 	int nofgames = 0;
 	float score = 0.0;
+	int stuff = 0;
 
+	already_guessed = malloc(WORD_SIZE);
 	word = malloc(size);
+	guess = malloc(GUESS_SIZE);
 
 
 	if(1 != init_secret(count, size, secret_array))
@@ -113,10 +116,13 @@ int main(int argc, char * argv[])
 		printf("What is your guess: ");
 		fgets(guess, 6, stdin);
 
+	
+
 		if (*guess >= 'a' && *guess <= 'z')
 		{
 			*guess = ('A' + *guess - 'a');
 		}
+
 
 
 		for (count = 0; count < size; ++count)
@@ -125,8 +131,24 @@ int main(int argc, char * argv[])
 			{
 				printf("Already in guess\n\n");
 				already = 0;
+				break;
 			}
 		}
+		
+		already_guessed[stuff] = guess[0];
+		already_guessed[WORD_SIZE - 1] = '\0';
+		stuff++;
+
+		for (count = 0; count < WORD_SIZE; ++count)
+		{
+			if (already_guessed[count] == guess[0])
+			{
+				printf("You already guessed that nimrod\n");
+				break;
+			}
+		}
+
+
 
 		if (guess[1] == '\n')
 		{
@@ -152,10 +174,8 @@ int main(int argc, char * argv[])
 
 			if (tracker == 1)
 			{
-				printf("That was not in the word\n\n");
 				wrong_guesses++;
 				printf("%s\n", hung[wrong_guesses]);
-				//wrong_guesses++;
 			}
 
 
@@ -175,7 +195,7 @@ int main(int argc, char * argv[])
 			}
 
 
-			stats = fopen("hangman.txt", "r+");
+			stats = fopen("hangmans", "r+");
 			fscanf(stats, "%d %d %d %f", &win, &loss, &nofgames, &score);
 
 			fclose(stats);
@@ -186,7 +206,7 @@ int main(int argc, char * argv[])
 				win++;
 				break;
 			}
-			else if (wrong_guesses == (CHANCES + 1))
+			else if (wrong_guesses == (CHANCES))
 			{
 				printf("You lose\n");
 				loss++;
@@ -205,11 +225,38 @@ int main(int argc, char * argv[])
 
 	}
 	nofgames++;
-	score = wrong_guesses / win;
-	
-	printf("Win: %d\tLoss: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
 
-	stats = fopen("hangman.txt", "w+");
+	score = wrong_guesses;
+
+
+
+	if (win > 1 && loss > 1)
+	{
+		printf("Wins: %d\tLosses: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+	else if (win == 1 && loss == 1)
+	{
+		printf("Win: %d\tLoss: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+	else if (win >= 1 && loss == 0)
+	{
+		printf("Wins: %d\tLoss: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+	else if (win == 0 && loss >= 1)
+	{
+		printf("Win: %d\tLosses: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+
+	else if (win == 1 && loss > 1)
+	{
+		printf("Win: %d\tLosses: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+	else if (win > 1 && loss == 1)
+	{
+		printf("Wins: %d\tLoss: %d\t Number of Games: %d\t Score: %.2f\n", win, loss, nofgames, score);
+	}
+
+	stats = fopen("hangmans", "w+");
 	fprintf(stats, "%d %d %d %.2f", win, loss, nofgames, score);
 
 	fclose(stats);
