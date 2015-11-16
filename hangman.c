@@ -22,6 +22,8 @@ int main(int argc, char * argv[])
 
 	dictionary = malloc(WORD_SIZE);
 
+	//must use .hangman and .word file in the same directory as the executable hangman program otherwise seg fault
+
 	if (argc == 1)
 	{
 		argv[1] = ".word"; //if no argument , default to word file
